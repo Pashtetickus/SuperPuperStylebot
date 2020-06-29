@@ -1,2 +1,6 @@
 # SuperPuperStylebot
-Telegram bot for image stylization
+**@SuperPuperStylebot** Бот умеет стилизовать фотки любыми фотками и натренированными ганами.
+
+Начало - команда `/start`
+
+Реализован выбор режима стилизации через кнопки. Повтор - `/start`. 
