@@ -21,7 +21,7 @@ def cancel(context, update):
 
 def start(context, update):
 	reply_keyboard = [	
-						['хочу свой стиль'],
+						['Хочу свой стиль!'],
 						['candy', 'mosaic', 'rain_princess', 'udnie'],
 					 ]
 
@@ -56,7 +56,7 @@ def get_info(context, update):
 
 def photo(bot, update):
 	chat_id = update.message.chat_id
-	update.message.reply_text('Принял! Скоро пришлю результат.')
+	update.message.reply_text('Принял! Скоро пришлю результат - \nэто займет несколько секунд')
 	print("Got image from {}".format(chat_id))
 
 	# получаем информацию о картинке
@@ -94,7 +94,7 @@ def usr_style(bot, update):
 
 	if chat_id in first_image_file:
         # первая картинка, которая к нам пришла станет content image, а вторая style image
-		update.message.reply_text('Принял! Скоро пришлю результат.')
+		update.message.reply_text('Принял! Скоро пришлю результат - \nэто займет где-то 1.5 минуты')
 		content_image_stream = BytesIO()
 		first_image_file[chat_id].download(out=content_image_stream)
 		del first_image_file[chat_id]
