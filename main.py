@@ -5,6 +5,7 @@ from config import TOKEN
 import numpy as np
 from PIL import Image
 from io import BytesIO
+import gc
 
 
 first_image_file = {}
@@ -47,6 +48,7 @@ def get_info(context, update):
 		update.message.reply_text('Жду картинку, которую хотите стилизовать,\nи после - картинку стиля.',
 							  reply_markup=ReplyKeyboardRemove())
 		return USR_STYLE
+	
 	else:
 		update.message.reply_text('Жду вашу картинку.',
 							  reply_markup=ReplyKeyboardRemove())
@@ -70,7 +72,8 @@ def photo(bot, update):
 	del first_image_file[chat_id]
 
 	output = transfer(info[chat_id][1], info[chat_id][0])
-	empty_cache()
+	empty_cache() # torch.cuda.empty_cache()
+	gc.collect()
 
 	# теперь отправим назад фото
 	output_stream = BytesIO()
@@ -103,17 +106,21 @@ def usr_style(bot, update):
 		image_file.download(out=style_image_stream)
 
 		output = run_style_transfer(content_image_stream, style_image_stream)
-		empty_cache()
+		empty_cache() # torch.cuda.empty_cache()
+		gc.collect()
 
 		# теперь отправим назад фото
 		output_stream = BytesIO()
 		output.save(output_stream, format='PNG')
 		output_stream.seek(0)
+
 		update.message.reply_text('Держите')
 		bot.send_photo(chat_id, photo=output_stream)
 		print("Sent Photo to user")
 		update.message.reply_text('Ниче так вышло, но немного странно, да? Для повтора тыкните -> /start')
+		
 		return ConversationHandler.END
+
 	else:
 		first_image_file[chat_id] = image_file
 		update.message.reply_text('Принял! Теперь картинку стиля.')
