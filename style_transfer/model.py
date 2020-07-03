@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import gc
 
 from PIL import Image
 
@@ -157,7 +158,6 @@ def run_style_transfer(content_img, style_img, input_img=input_img, cnn=cnn,
     
     content_img = image_loader(content_img)
     style_img = image_loader(style_img)
-    print(content_img.shape, '\n', style_img.shape)
 
     input_img = torch.randn(content_img.data.size(), device=device)
 
@@ -210,6 +210,6 @@ def run_style_transfer(content_img, style_img, input_img=input_img, cnn=cnn,
     input_img = torch.mul(input_img, 255).clamp_(0, 255)
     print(torch.max(input_img))
     img = input_img.to('cpu').clone().detach().numpy().astype("uint8")
-    torch.cuda.empty_cache()
+    del model, cnn # не понял работает ли, но память не меняется - надо потом проверить искусственно
 
     return Image.fromarray(img)
