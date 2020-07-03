@@ -5,9 +5,10 @@ from PIL import Image
 from .transformer_net import TransformerNet
 from . import utils
 import re
+import gc
 
 def transfer(content_img_stream, style):
-    device = torch.device("cpu")
+    device = torch.device("cuda")
 
     content_image = Image.open(content_img_stream)
     content_transform = transforms.Compose([
@@ -27,9 +28,9 @@ def transfer(content_img_stream, style):
             if re.search(r'in\d+\.running_(mean|var)$', k):
                 del state_dict[k]
         style_model.load_state_dict(state_dict)
-        style_model.to(device).cpu()
+        style_model.to(device)
         output = style_model(content_image)
-        print(output.shape)
+        del style_model
 
     return utils.save_image(output[0])
     ''' 
